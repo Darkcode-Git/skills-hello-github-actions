@@ -5,16 +5,20 @@ package modelo;
  */
 public final class SistemaCooperativa {
 
-    private static SistemaCooperativa instancia;
+    private static volatile SistemaCooperativa instancia;
     private Cooperativa cooperativa;
 
     private SistemaCooperativa() {
         // Constructor privado para Singleton
     }
 
-    public static synchronized SistemaCooperativa getInstancia() {
+    public static SistemaCooperativa getInstancia() {
         if (instancia == null) {
-            instancia = new SistemaCooperativa();
+            synchronized (SistemaCooperativa.class) {
+                if (instancia == null) {
+                    instancia = new SistemaCooperativa();
+                }
+            }
         }
         return instancia;
     }
