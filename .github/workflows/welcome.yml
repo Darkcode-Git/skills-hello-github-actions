@@ -1,0 +1,22 @@
+name: Welcome
+
+on:
+  pull_request:
+    types:
+      - opened
+
+permissions:
+  pull-requests: write
+
+jobs:
+  welcome:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Welcome message
+        run: |
+          gh pr comment "$PR_URL" \
+            --body "¡Bienvenido/a! Gracias por abrir este Pull Request. El equipo lo revisará pronto. 🚀"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
