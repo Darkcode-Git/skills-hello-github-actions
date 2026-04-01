@@ -26,7 +26,7 @@ public class EmployeeMvcController {
     }
 
     @RequestMapping(path = {"/edit", "/edit/{id}"})
-    public String editEmployeeById(Model model, @PathVariable("id") Long id) {
+    public String editEmployeeById(Model model, @PathVariable(value = "id", required = false) Long id) {
         if (id != null) {
             model.addAttribute("employee", service.getEmployeeById(id));
         } else {
@@ -35,11 +35,10 @@ public class EmployeeMvcController {
         return "add-edit-employee";
     }
 
-    @RequestMapping(path = "/delete/{id}")
+    @RequestMapping(path = "/delete/{id}", method = RequestMethod.POST)
     public String deleteEmployeeById(Model model, @PathVariable("id") Long id) {
         service.deleteEmployeeById(id);
-        model.addAttribute("employees", service.getAllEmployees());
-        return "list-employees";
+        return "redirect:/";
     }
 
     @RequestMapping(path = "/createEmployee", method = RequestMethod.POST)

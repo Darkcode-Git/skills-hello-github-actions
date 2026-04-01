@@ -4,7 +4,6 @@ import com.cooprkc.demo.model.EmployeeEntity;
 import com.cooprkc.demo.repository.EmployeeRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,9 +17,7 @@ public class EmployeeService {
     }
 
     public List<EmployeeEntity> getAllEmployees() {
-        List<EmployeeEntity> result = new ArrayList<>();
-        repository.findAll().forEach(result::add);
-        return result;
+        return repository.findAll();
     }
 
     public EmployeeEntity getEmployeeById(Long id) {
@@ -29,19 +26,6 @@ public class EmployeeService {
     }
 
     public EmployeeEntity createOrUpdateEmployee(EmployeeEntity entity) {
-        if (entity.getId() == null) {
-            return repository.save(entity);
-        }
-
-        Optional<EmployeeEntity> current = repository.findById(entity.getId());
-        if (current.isPresent()) {
-            EmployeeEntity newEntity = current.get();
-            newEntity.setFirstName(entity.getFirstName());
-            newEntity.setLastName(entity.getLastName());
-            newEntity.setEmail(entity.getEmail());
-            return repository.save(newEntity);
-        }
-
         return repository.save(entity);
     }
 
