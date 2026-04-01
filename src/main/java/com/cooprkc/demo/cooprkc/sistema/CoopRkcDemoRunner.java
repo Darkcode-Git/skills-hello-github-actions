@@ -51,6 +51,7 @@ public class CoopRkcDemoRunner implements CommandLineRunner {
             .collect(Collectors.toList());
         sociosConSaldoAlto.forEach(nombre -> System.out.println("Socio con saldo alto: " + nombre));
 
+        // Dato intencionalmente inválido para demostrar manejo de errores de entrada.
         String entradaMonto = "abc";
         try {
             double monto = Double.parseDouble(entradaMonto);
