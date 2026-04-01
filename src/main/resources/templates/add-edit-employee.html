@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Agregar/Editar Empleado</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        form { max-width: 500px; }
+        label { display: block; margin-top: 0.7rem; }
+        input { width: 100%; padding: 0.4rem; }
+        button { margin-top: 1rem; padding: 0.5rem 1rem; }
+        a { margin-left: 1rem; }
+    </style>
+</head>
+<body>
+<h2 th:text="${employee.id} != null ? 'Editar empleado' : 'Agregar empleado'"></h2>
+<form th:action="@{/createEmployee}" th:object="${employee}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <label for="firstName">Nombre</label>
+    <input id="firstName" type="text" th:field="*{firstName}" required />
+
+    <label for="lastName">Apellido</label>
+    <input id="lastName" type="text" th:field="*{lastName}" required />
+
+    <label for="email">Email</label>
+    <input id="email" type="email" th:field="*{email}" required />
+
+    <button type="submit">Guardar</button>
+    <a th:href="@{/}">Cancelar</a>
+</form>
+</body>
+</html>
