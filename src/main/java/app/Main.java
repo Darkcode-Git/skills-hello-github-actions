@@ -4,12 +4,15 @@ import modelo.Cooperativa;
 import modelo.Cuenta;
 import modelo.CuentaAhorros;
 import modelo.Socio;
+import modelo.SistemaCooperativa;
 import transacciones.Deposito;
 import transacciones.Retiro;
 import transacciones.Transaccion;
+import transacciones.TransaccionFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Scanner;
 
 /**
  * Clase principal que demuestra el funcionamiento del sistema
@@ -28,8 +31,10 @@ public class Main {
         System.out.println("║     SISTEMA COOPERATIVA CoopRKC              ║");
         System.out.println("╚══════════════════════════════════════════════╝");
 
-        // ── 1. Crear la cooperativa ──────────────────────────────────────
-        Cooperativa cooperativa = new Cooperativa("CoopRKC");
+        // ── 1. Crear la cooperativa usando Singleton ─────────────────────
+        SistemaCooperativa sistema = SistemaCooperativa.getInstancia();
+        sistema.inicializar("CoopRKC");
+        Cooperativa cooperativa = sistema.getCooperativa();
 
         // ── 2. Registrar socios ─────────────────────────────────────────
         Socio socio1 = new Socio("Ana García", "1001234567");
@@ -76,14 +81,14 @@ public class Main {
         // ── 6. Realizar operaciones de depósito y retiro ─────────────────
         System.out.println("\n=== Operaciones de depósito y retiro ===");
 
-        // Usando polimorfismo: lista de Transaccion (interfaz)
+        // Usando polimorfismo + Factory Method
         List<Transaccion> transacciones = Arrays.asList(
-            new Deposito(ca1, 300000.00),
-            new Deposito(ca3, 500000.00),
-            new Retiro(ca2, 100000.00),
-            new Retiro(ca4, 200000.00),
+            TransaccionFactory.crearTransaccion("DEPOSITO", ca1, 300000.00),
+            TransaccionFactory.crearTransaccion("DEPOSITO", ca3, 500000.00),
+            TransaccionFactory.crearTransaccion("RETIRO", ca2, 100000.00),
+            TransaccionFactory.crearTransaccion("RETIRO", ca4, 200000.00),
             // Retiro con saldo insuficiente – gestión de errores
-            new Retiro(ca2, 999999.00)
+            TransaccionFactory.crearTransaccion("RETIRO", ca2, 999999.00)
         );
 
         // Programación funcional: ejecutar todas las transacciones con forEach
@@ -110,6 +115,25 @@ public class Main {
             .map(s -> String.format("  %-20s | Saldo total: $%.2f",
                 s.getNombre(), s.getSaldoTotal()))
             .forEach(System.out::println);
+
+        // ── 12. Validación de entrada con try-catch-finally ─────────────
+        System.out.println("\n=== Validación de entrada de usuario ===");
+        Scanner scanner = new Scanner(System.in);
+        try {
+            System.out.print("Ingrese un monto para validación (ejemplo 150000): ");
+            String entrada = scanner.nextLine();
+            double monto = Double.parseDouble(entrada);
+            if (monto <= 0) {
+                throw new IllegalArgumentException("El monto debe ser mayor que cero.");
+            }
+            System.out.printf("  Monto válido ingresado: $%.2f%n", monto);
+        } catch (NumberFormatException e) {
+            System.out.println("  [ERROR] Entrada inválida: debe ingresar un número.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("  [ERROR] " + e.getMessage());
+        } finally {
+            System.out.println("  Validación finalizada. El programa continúa sin detenerse.");
+        }
 
         System.out.println("\n╔══════════════════════════════════════════════╗");
         System.out.println("║     FIN DE LA DEMOSTRACIÓN CoopRKC           ║");
